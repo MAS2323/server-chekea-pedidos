@@ -7,10 +7,10 @@ import path from "path";
 import { fileURLToPath } from "url";
 import dotenv from "dotenv";
 import bodyParser from "body-parser";
+import { PORT } from "./middlewares/config.js";
 import fs from "fs";
 
 const app = express();
-const port = 3000;
 dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
@@ -38,6 +38,6 @@ mongoose
   .then(() => console.log("Base de datos conectada"))
   .catch((err) => console.log(err));
 
-app.listen(process.env.PORT || port, () => {
-  console.log(`Node.js server started on port ${process.env.PORT || port}!`);
+app.listen(process.env.PORT || PORT, () => {
+  console.log(`Node.js server started on port ${process.env.PORT || PORT}!`);
 });
