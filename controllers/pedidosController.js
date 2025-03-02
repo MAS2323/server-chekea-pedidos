@@ -2,7 +2,6 @@ import mongoose from "mongoose";
 import Pedidos from "../models/Pedidos.js";
 import { uploadImage, deleteImage } from "../middlewares/cloudinary.js";
 import fs from "node:fs";
-import { v4 as uuidv4 } from "uuid";
 
 // Función para crear un nuevo pedido
 const createPedido = async (req, res) => {
