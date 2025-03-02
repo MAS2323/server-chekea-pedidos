@@ -37,7 +37,7 @@ const createPedido = async (req, res) => {
     }
 
     const newPedido = await Pedidos.create({
-      id,
+      id, // Utilizamos el id que se pasa como parámetro
       description,
       quantity,
       time,
@@ -62,13 +62,13 @@ const getAllPedidos = async (req, res) => {
   }
 };
 
-// Obtener un pedido por su ID generado automáticamente
+// Obtener los pedidos por el ID del usuario
 const getPedidosByUserId = async (req, res) => {
   try {
     const { id } = req.params; // ID del usuario
 
-    // Buscar todos los pedidos donde userId coincida con el id del usuario
-    const pedidos = await Pedidos.find({ userId: id });
+    // Buscar todos los pedidos donde el campo 'id' coincida con el id del usuario
+    const pedidos = await Pedidos.find({ id: id });
 
     if (!pedidos.length) {
       return res
