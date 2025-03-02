@@ -10,7 +10,7 @@ router.post(
   pedidosController.createPedido
 );
 router.get("/pedidos", pedidosController.getAllPedidos);
-router.get("/pedidos/:id", pedidosController.getPedidosByUserId);
+router.get("/pedidos/:userId", pedidosController.getPedidosByUserId);
 router.put(
   "/pedidos/:id",
   upload.array("images", 5),
