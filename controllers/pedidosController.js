@@ -7,16 +7,14 @@ import { v4 as uuidv4 } from "uuid";
 // Función para crear un nuevo pedido
 const createPedido = async (req, res) => {
   try {
-    const { description, quantity, time } = req.body;
+    const { id, description, quantity, time } = req.body;
 
-    // Validar campos obligatorios
-    if (!description || !quantity || !time) {
+    if (!id || !description || !quantity || !time) {
       return res
         .status(400)
         .json({ message: "Todos los campos son obligatorios" });
     }
 
-    // Subir imágenes a Cloudinary
     if (!req.files || req.files.length === 0) {
       return res
         .status(400)
@@ -25,38 +23,26 @@ const createPedido = async (req, res) => {
 
     const folderName = "pedidos_chekea";
     const images = [];
+
     for (const file of req.files) {
       try {
         const result = await uploadImage(file.path, folderName);
-        images.push({
-          url: result.url,
-          public_id: result.public_id,
-        });
-        fs.unlinkSync(file.path); // Eliminar archivo temporal
+        images.push({ url: result.url, public_id: result.public_id });
+        fs.unlinkSync(file.path);
       } catch (error) {
         console.error("Error al subir la imagen:", error);
-        // Eliminar imágenes ya subidas
-        if (images.length > 0) {
-          for (const image of images) {
-            await deleteImage(image.public_id).catch((err) =>
-              console.error("Error al eliminar imagen de Cloudinary:", err)
-            );
-          }
-        }
-        return res.status(500).json({
-          error: "Error al subir la imagen a Cloudinary",
-          details: error.message,
-        });
+        return res
+          .status(500)
+          .json({ error: "Error al subir la imagen a Cloudinary" });
       }
     }
 
-    // Crear el pedido con un userid generado automáticamente
     const newPedido = await Pedidos.create({
+      id,
       description,
       quantity,
       time,
       image: images,
-      userid: uuidv4(), // Genera un UUID único para el pedido
     });
 
     res.status(201).json(newPedido);
