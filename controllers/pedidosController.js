@@ -142,6 +142,33 @@ const updatePedido = async (req, res) => {
   }
 };
 
+// Función para obtener un pedido por su ID
+const getPedidoById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Validar si el ID es un ObjectId válido de MongoDB
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "ID de pedido no válido" });
+    }
+
+    // Buscar el pedido por ID
+    const pedido = await Pedidos.findById(id);
+    if (!pedido) {
+      return res.status(404).json({ message: "Pedido no encontrado" });
+    }
+
+    // Responder con el pedido encontrado
+    res.status(200).json(pedido);
+  } catch (error) {
+    console.error("Error al obtener el pedido:", error.message);
+    res.status(500).json({
+      message: "Error interno del servidor",
+      error: error.message,
+    });
+  }
+};
+
 // Eliminar un pedido por su ID generado automáticamente
 const deletePedido = async (req, res) => {
   try {
@@ -180,4 +207,5 @@ export default {
   updatePedido,
   deletePedido,
   getPedidosByUserId,
+  getPedidoById,
 };
