@@ -65,15 +65,25 @@ const getAllPedidos = async (req, res) => {
 // Obtener un pedido por su ID generado automáticamente
 const getPedidosByUserId = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id } = req.params; // ID del pedido
+    const userId = req.user?.id; // ID del usuario autenticado
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ message: "ID de pedido no válido" });
     }
 
+    // Buscar el pedido
     const pedido = await Pedidos.findById(id);
+
     if (!pedido) {
       return res.status(404).json({ message: "Pedido no encontrado" });
+    }
+
+    // Verificar si el pedido pertenece al usuario autenticado
+    if (pedido.id !== userId) {
+      return res
+        .status(403)
+        .json({ message: "No tienes permiso para ver este pedido" });
     }
 
     res.status(200).json(pedido);
