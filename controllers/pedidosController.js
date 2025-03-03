@@ -42,6 +42,7 @@ const createPedido = async (req, res) => {
       quantity,
       time,
       image: images,
+      status: "Pendiente",
     });
 
     res.status(201).json(newPedido);
@@ -200,6 +201,35 @@ const deletePedido = async (req, res) => {
     res.status(500).json({ message: "Error al eliminar el pedido" });
   }
 };
+const updatePedidoStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "ID de pedido no válido" });
+    }
+
+    if (!["Pendiente", "Procesando", "Enviado", "Entregado"].includes(status)) {
+      return res.status(400).json({ message: "Estado no válido" });
+    }
+
+    const updatedPedido = await Pedidos.findByIdAndUpdate(
+      id,
+      { status },
+      { new: true }
+    );
+
+    if (!updatedPedido) {
+      return res.status(404).json({ message: "Pedido no encontrado" });
+    }
+
+    res.status(200).json(updatedPedido);
+  } catch (error) {
+    console.error("Error al actualizar el estado:", error.message);
+    res.status(500).json({ message: "Error interno del servidor" });
+  }
+};
 
 export default {
   createPedido,
@@ -208,4 +238,5 @@ export default {
   deletePedido,
   getPedidosByUserId,
   getPedidoById,
+  updatePedidoStatus,
 };
