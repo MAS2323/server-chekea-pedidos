@@ -231,6 +231,17 @@ const updatePedidoStatus = async (req, res) => {
   }
 };
 
+// Función para obtener usuarios que han realizado pedidos
+const getUsersWithPedidos = async (req, res) => {
+  try {
+    const users = await Pedidos.distinct("id");
+    res.status(200).json(users);
+  } catch (error) {
+    console.error("Error al obtener usuarios con pedidos:", error);
+    res.status(500).json({ message: "Error al obtener usuarios con pedidos" });
+  }
+};
+
 export default {
   createPedido,
   getAllPedidos,
@@ -239,4 +250,5 @@ export default {
   getPedidosByUserId,
   getPedidoById,
   updatePedidoStatus,
+  getUsersWithPedidos,
 };

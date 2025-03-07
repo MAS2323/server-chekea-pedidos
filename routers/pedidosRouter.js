@@ -9,6 +9,7 @@ router.post(
   upload.array("images", 5),
   pedidosController.createPedido
 );
+router.get("/usuarios-con-pedidos", pedidosController.getUsersWithPedidos);
 router.patch("/pedidos/:id/status", pedidosController.updatePedidoStatus);
 router.get("/pedido/:id", pedidosController.getPedidoById);
 router.get("/pedidos", pedidosController.getAllPedidos);
