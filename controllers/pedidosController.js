@@ -234,11 +234,26 @@ const updatePedidoStatus = async (req, res) => {
 // Función para obtener usuarios que han realizado pedidos
 const getUsersWithPedidos = async (req, res) => {
   try {
-    const users = await Pedidos.distinct("id");
-    res.status(200).json(users);
+    const usersWithPedidos = await Pedidos.aggregate([
+      {
+        $group: {
+          _id: "$id", // Agrupar por el ID del usuario
+          pedidos: { $push: "$_id" }, // Obtener los IDs de los pedidos
+        },
+      },
+      {
+        $project: {
+          _id: 0, // No mostrar el campo _id de MongoDB
+          userId: "$_id", // Renombrar `_id` a `userId` para mayor claridad
+          pedidos: 1, // Mantener la lista de pedidos
+        },
+      },
+    ]);
+
+    res.status(200).json(usersWithPedidos);
   } catch (error) {
     console.error("Error al obtener usuarios con pedidos:", error);
-    res.status(500).json({ message: "Error al obtener usuarios con pedidos" });
+    res.status(500).json({ message: "Error interno del servidor" });
   }
 };
 
